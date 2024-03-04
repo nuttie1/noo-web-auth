@@ -59,6 +59,7 @@ const authenticate = async (
       user_name: user.user_name,
       id: user.id,
       role: user.role,
+      points : user.points
     };
 
     res.locals.userFromToken = outputUser;

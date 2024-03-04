@@ -18,6 +18,11 @@ const userModel = new mongoose.Schema<User>({
     type: String,
     required: true,
   },
+  points: { 
+    type: Number, 
+    default: 0,
+    required: false, 
+  },
 });
 
 // Duplicate the ID field.
