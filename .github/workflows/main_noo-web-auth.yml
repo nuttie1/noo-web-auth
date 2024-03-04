@@ -45,7 +45,8 @@ jobs:
       id-token: write #This is required for requesting the JWT
 
     steps:
-      - uses: ahmadnassri/action-workflow-queue@v1
+      - name: Check if this workflow is running (wait)
+        uses: ahmadnassri/action-workflow-queue@v1
 
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
