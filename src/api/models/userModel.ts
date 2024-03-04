@@ -9,11 +9,6 @@ const userModel = new mongoose.Schema<User>({
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   role: {
     type: String,
     enum: ['user', 'admin'],

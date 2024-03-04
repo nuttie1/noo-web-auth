@@ -53,7 +53,6 @@ const userPost = async (
       message: 'user created',
       user: {
         user_name: newUser.user_name,
-        email: newUser.email,
         id: newUser._id,
       },
     };
@@ -90,7 +89,6 @@ const userPut = async (
       message: 'user updated',
       user: {
         user_name: result.user_name,
-        email: result.email,
         id: result._id,
       },
     };
@@ -128,7 +126,6 @@ const userDelete = async (
       message: 'user deleted',
       user: {
         user_name: result.user_name,
-        email: result.email,
         id: result._id,
       },
     };

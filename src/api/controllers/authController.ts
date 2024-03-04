@@ -10,7 +10,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   const {username, password} = req.body;
 
   console.log('user, password', username, password);
-  const user = await userModel.findOne({email: username});
+  const user = await userModel.findOne({user_name: username});
 
   if (!user) {
     next(new CustomError('Invalid username/password', 403));
@@ -24,7 +24,6 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
   const tokenContent: LoginUser = {
     user_name: user.user_name,
-    email: user.email,
     id: user._id,
     role: user.role,
   };
@@ -35,7 +34,6 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     message: 'Login successful',
     user: {
       user_name: user.user_name,
-      email: user.email,
       id: user._id,
     },
   };

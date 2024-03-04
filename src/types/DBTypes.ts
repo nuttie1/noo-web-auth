@@ -4,7 +4,6 @@ import {Point} from 'geojson';
 type User = Partial<Document> & {
   id: Types.ObjectId | string;
   user_name: string;
-  email: string;
   role: 'user' | 'admin';
   password: string;
 };
