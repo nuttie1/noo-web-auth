@@ -7,10 +7,10 @@ import {LoginResponse} from '../../types/MessageTypes';
 import {LoginUser} from '../../types/DBTypes';
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
-  const {username, password} = req.body;
+  const {user_name, password} = req.body;
 
-  console.log('user, password', username, password);
-  const user = await userModel.findOne({user_name: username});
+  console.log('user, password', user_name, password);
+  const user = await userModel.findOne({user_name: user_name});
 
   if (!user) {
     next(new CustomError('Invalid username/password', 403));
