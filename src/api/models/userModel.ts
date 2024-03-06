@@ -8,6 +8,7 @@ const userModel = new mongoose.Schema<User>({
   user_name: {
     type: String,
     required: true,
+    unique: true,
   },
   role: {
     type: String,
@@ -18,10 +19,10 @@ const userModel = new mongoose.Schema<User>({
     type: String,
     required: true,
   },
-  points: { 
-    type: Number, 
+  points: {
+    type: Number,
     default: 0,
-    required: false, 
+    required: false,
   },
 });
 
