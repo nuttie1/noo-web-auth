@@ -4,8 +4,27 @@ import bcrypt from 'bcryptjs';
 import userModel from '../models/userModel';
 import {LoginUser, UserInput, UserOutput} from '../../types/DBTypes';
 import {UserResponse} from '../../types/MessageTypes';
+import Filter from 'bad-words';
 
 const salt = bcrypt.genSaltSync(12);
+
+const checkUsername = (user: UserInput) => {
+  const usernamePattern = new RegExp('^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$');
+    
+    if (!usernamePattern.test(user.user_name)) {
+      new CustomError('Invalid username', 400);
+      return false;
+    }
+
+    const filter = new Filter();
+
+    if (filter.isProfane(user.user_name)) {
+      new CustomError('Username contains naughty word', 400);
+      return false;
+    }
+    return true;
+}
+
 
 const check = (req: Request, res: Response) => {
   console.log('check');
@@ -47,6 +66,12 @@ const userPost = async (
 ) => {
   try {
     const user = req.body;
+
+    if (!checkUsername(user)) {
+      next(new CustomError('Invalid username', 400));
+      return;
+    }
+
     user.password = await bcrypt.hash(user.password, salt);
     const newUser = await userModel.create(user);
     const response: UserResponse = {
@@ -69,6 +94,9 @@ const userPut = async (
 ) => {
   try {
     const {userFromToken} = res.locals;
+    if (checkUsername(req.body)) {
+      return;
+    }
 
     let id = userFromToken.id;
     if (userFromToken.role === 'admin' && req.params.id) {
