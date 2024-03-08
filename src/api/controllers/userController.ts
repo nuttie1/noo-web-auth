@@ -71,9 +71,9 @@ const verifyPassword = async (
       return;
     }
     if (await bcrypt.compare(password, user.password)) {
-      res.json({message: "Password verified"});
+      res.json(true);
     } else {
-      res.json({message: "Password not verified"});
+      res.json(false);
     }
   } catch (error) {
     next(new CustomError((error as Error).message, 500));
