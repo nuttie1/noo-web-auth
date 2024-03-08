@@ -4,6 +4,7 @@ import {
   checkToken,
   userDelete,
   userGet,
+  verifyPassword,
   userListGet,
   userPost,
   userPut,
@@ -28,5 +29,9 @@ router
   .get(userGet)
   .delete(authenticate, userDelete)
   .put(authenticate, userPut);
+
+router 
+  .route('/username/:user_name')
+  .post(verifyPassword)
 
 export default router;

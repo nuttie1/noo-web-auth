@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction} from 'express';
+import {Request, Response, NextFunction, response} from 'express';
 import CustomError from '../../classes/CustomError';
 import bcrypt from 'bcryptjs';
 import userModel from '../models/userModel';
@@ -24,7 +24,6 @@ const checkUsername = (user: UserInput) => {
     }
     return true;
 }
-
 
 const check = (req: Request, res: Response) => {
   console.log('check');
@@ -58,6 +57,28 @@ const userGet = async (
     next(new CustomError((error as Error).message, 500));
   }
 };
+
+const verifyPassword = async (
+  req: Request<{}, {}, {user_name: string, password: string}>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const {user_name, password} = req.body;
+    const user = await userModel.findOne({user_name}).select("password");
+    if (!user) {
+      next(new CustomError('User not found', 404));
+      return;
+    }
+    if (await bcrypt.compare(password, user.password)) {
+      res.json({message: "Password verified"});
+    } else {
+      res.json({message: "Password not verified"});
+    }
+  } catch (error) {
+    next(new CustomError((error as Error).message, 500));
+  }
+}
 
 const userPost = async (
   req: Request<{}, {}, UserInput>,
@@ -187,4 +208,4 @@ const checkToken = async (
   }
 };
 
-export {check, userListGet, userGet, userPost, userPut, userDelete, checkToken};
+export {check, userListGet, userGet, verifyPassword, userPost, userPut, userDelete, checkToken};
