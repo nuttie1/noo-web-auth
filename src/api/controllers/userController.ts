@@ -8,17 +8,17 @@ import Filter from 'bad-words';
 
 const salt = bcrypt.genSaltSync(12);
 
-const checkUsername = (user: UserInput) => {
+const checkUsername = (user_name: string) => {
   const usernamePattern = new RegExp('^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$');
     
-    if (!usernamePattern.test(user.user_name)) {
+    if (!usernamePattern.test(user_name)) {
       new CustomError('Invalid username', 400);
       return false;
     }
 
     const filter = new Filter();
 
-    if (filter.isProfane(user.user_name)) {
+    if (filter.isProfane(user_name)) {
       new CustomError('Username contains naughty word', 400);
       return false;
     }
@@ -88,7 +88,7 @@ const userPost = async (
   try {
     const user = req.body;
 
-    if (!checkUsername(user)) {
+    if (!checkUsername(user.user_name)) {
       next(new CustomError('Invalid username', 400));
       return;
     }
@@ -100,6 +100,7 @@ const userPost = async (
       user: {
         user_name: newUser.user_name,
         id: newUser._id,
+        points: newUser.points
       },
     };
     res.json(response);
@@ -115,15 +116,22 @@ const userPut = async (
 ) => {
   try {
     const {userFromToken} = res.locals;
-    if (checkUsername(req.body)) {
-      return;
+    if (req.body.user_name) {
+      if (!checkUsername(req.body.user_name)) {
+        console.log(req.body)
+        return;
+      }
     }
-
     let id = userFromToken.id;
     if (userFromToken.role === 'admin' && req.params.id) {
       id = req.params.id;
     }
     console.log('id', id, req.body);
+
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, salt)
+    }
+
     const result = await userModel
       .findByIdAndUpdate(id, req.body, {
         new: true,
@@ -133,14 +141,15 @@ const userPut = async (
       next(new CustomError('User not found', 404));
       return;
     }
-
     const response: UserResponse = {
       message: 'user updated',
       user: {
         user_name: result.user_name,
         id: result._id,
+        points: result.points
       },
     };
+    console.log(response, "LOL");
     res.json(response);
   } catch (error) {
     next(new CustomError((error as Error).message, 500));
@@ -176,6 +185,7 @@ const userDelete = async (
       user: {
         user_name: result.user_name,
         id: result._id,
+        points: result.points
       },
     };
     console.log('delete response', response);

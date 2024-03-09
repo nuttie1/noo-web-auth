@@ -8,7 +8,7 @@ type User = Partial<Document> & {
   points: number;
 };
 
-type UserOutput = Omit<User, 'password' | 'role' | 'points'>;
+type UserOutput = Omit<User, 'password' | 'role'>;
 
 type UserInput = Omit<User, 'id' | 'role'>;
 
