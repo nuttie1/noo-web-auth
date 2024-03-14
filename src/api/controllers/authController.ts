@@ -6,6 +6,13 @@ import bcrypt from 'bcryptjs';
 import {LoginResponse} from '../../types/MessageTypes';
 import {LoginUser} from '../../types/DBTypes';
 
+/**
+ * User login
+ * @param req - Request object. Should contain user_name and password
+ * @param res - Response object. Will contain token and user info
+ * @param next - Next function. Will pass error to error handler
+ * @returns - JSON object with token and user info
+ */
 const login = async (req: Request, res: Response, next: NextFunction) => {
   const {user_name, password} = req.body;
 

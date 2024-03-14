@@ -8,6 +8,11 @@ import Filter from 'bad-words';
 
 const salt = bcrypt.genSaltSync(12);
 
+/**
+ * Check if username is valid
+ * @param user_name - username to check
+ * @returns - true if valid, false if not
+ */
 const checkUsername = (user_name: string) => {
   const usernamePattern = new RegExp('^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$');
     
@@ -25,11 +30,22 @@ const checkUsername = (user_name: string) => {
     return true;
 }
 
+/**
+ * Check if server is alive
+ * @param req - Request object
+ * @param res - Response object. Will contain message 'I am alive'
+ */
 const check = (req: Request, res: Response) => {
   console.log('check');
   res.json({message: 'I am alive'});
 };
 
+/**
+ * Get list of all users
+ * @param req - Request object.  
+ * @param res - Response object. Will contain list of users
+ * @param next - Next function. Will pass error to error handler
+ */
 const userListGet = async (req: Request, res: Response, next: NextFunction) => {
   try {
     console.log('userListGet');
@@ -40,6 +56,12 @@ const userListGet = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+/**
+ * Get user by id
+ * @param req - Request object. Should contain user id
+ * @param res - Response object. Will contain user info
+ * @param next - Next function. Will pass error to error handler
+ */
 const userGet = async (
   req: Request<{id: string}>,
   res: Response,
@@ -58,6 +80,13 @@ const userGet = async (
   }
 };
 
+/**
+ * Verify user password
+ * @param req - Request object. Should contain user_name and password
+ * @param res - Response object. Will contain true if password is correct, false if not
+ * @param next - Next function. Will pass error to error handler
+ * @returns - JSON object with true if password is correct, false if not
+ */
 const verifyPassword = async (
   req: Request<{}, {}, {user_name: string, password: string}>,
   res: Response,
@@ -80,6 +109,13 @@ const verifyPassword = async (
   }
 }
 
+/**
+ * Create new user
+ * @param req - Request object. Should contain user info
+ * @param res - Response object. Will contain message 'user created' and user info
+ * @param next - Next function. Will pass error to error handler
+ * @returns - JSON object with message 'user created' and user info
+ */
 const userPost = async (
   req: Request<{}, {}, UserInput>,
   res: Response,
@@ -109,6 +145,13 @@ const userPost = async (
   }
 };
 
+/**
+ * Update user info
+ * @param req - Request object. Should contain user id and info to update
+ * @param res - Response object. Will contain message 'user updated' and user info
+ * @param next - Next function. Will pass error to error handler
+ * @returns - JSON object with message 'user updated' and user info
+ */
 const userPut = async (
   req: Request<{id?: string}, {}, UserInput>,
   res: Response<UserResponse, {userFromToken: LoginUser}>,
@@ -149,13 +192,19 @@ const userPut = async (
         points: result.points
       },
     };
-    console.log(response, "LOL");
     res.json(response);
   } catch (error) {
     next(new CustomError((error as Error).message, 500));
   }
 };
 
+/**
+ * Delete user
+ * @param req - Request object. Should contain user id
+ * @param res - Response object. Will contain message 'user deleted' and user info
+ * @param next - Next function. Will pass error to error handler
+ * @returns - JSON object with message 'user deleted' and user info
+ */
 const userDelete = async (
   req: Request<{id?: string}>,
   res: Response<UserResponse, {userFromToken: LoginUser}>,
@@ -195,6 +244,13 @@ const userDelete = async (
   }
 };
 
+/**
+ * Check if token is valid
+ * @param req - Request object
+ * @param res - Response object. Will contain message 'Token valid' and user info
+ * @param next - Next function. Will pass error to error handler
+ * @returns - JSON object with message 'Token valid' and user info
+ */
 const checkToken = async (
   req: Request,
   res: Response<UserResponse, {userFromToken: LoginUser}>,

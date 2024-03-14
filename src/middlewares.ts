@@ -6,11 +6,24 @@ import userModel from './api/models/userModel';
 import {ErrorResponse} from './types/MessageTypes';
 import {LoginUser, TokenContent, UserOutput} from './types/DBTypes';
 
+/**
+ * Middleware to handle 404 errors
+ * @param req - Request object. 
+ * @param res  - Response object.
+ * @param next - Next function. Will pass error to error handler
+ */
 const notFound = (req: Request, res: Response, next: NextFunction) => {
   const error = new CustomError(`🔍 - Not Found - ${req.originalUrl}`, 404);
   next(error);
 };
 
+/**
+ * Middleware to handle errors
+ * @param err - Error object
+ * @param req - Request object
+ * @param res - Response object. Will contain error message and stack trace
+ * @param next - Next function. Will pass error to error handler
+ */
 const errorHandler = (
   err: CustomError,
   req: Request,
@@ -25,6 +38,13 @@ const errorHandler = (
   });
 };
 
+/**
+ * Middleware to authenticate user
+ * @param req - Request object. Should contain token in headers
+ * @param res - Response object. Will contain user info
+ * @param next - Next function. Will pass error to error handler
+ * @returns - JSON object with user info
+ */
 const authenticate = async (
   req: Request,
   res: Response,

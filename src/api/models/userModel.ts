@@ -4,6 +4,14 @@
 import mongoose from 'mongoose';
 import {User} from '../../types/DBTypes';
 
+/**
+ * User model
+ * @param user_name - username
+ * @param role - user role
+ * @param password - user password
+ * @param points - user points
+ * @returns - user object
+ */
 const userModel = new mongoose.Schema<User>({
   user_name: {
     type: String,
